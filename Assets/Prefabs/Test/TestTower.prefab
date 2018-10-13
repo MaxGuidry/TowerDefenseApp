@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 23616434241215030}
   - component: {fileID: 136957546797521956}
   m_Layer: 0
-  m_Name: Tower
+  m_Name: TestTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
