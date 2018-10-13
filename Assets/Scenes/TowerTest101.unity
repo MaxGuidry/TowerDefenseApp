@@ -251,7 +251,7 @@ GameObject:
   - component: {fileID: 1006793535}
   m_Layer: 0
   m_Name: Cylinder
-  m_TagString: Untagged
+  m_TagString: Area
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -545,7 +545,7 @@ GameObject:
   - component: {fileID: 2109466073}
   m_Layer: 0
   m_Name: Hub
-  m_TagString: Untagged
+  m_TagString: Hub
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -578,7 +578,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 0bdf1fe56d587cb4497c5e7275fb5b5e, type: 2}
+  - {fileID: 2100000, guid: ef72c87fd79bbac43b5d4b7092e985b5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -631,8 +631,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerPrefab: {fileID: 1278236728667144, guid: 04fbe3aa6b0bafa4bbd932e00faa1cbe,
     type: 2}
+  TESTOBJ: {fileID: 0}
   cam: {fileID: 1078073299}
-  Hub: {fileID: 0}
+  Hub: {fileID: 2109466068}
+  Red: {fileID: 2100000, guid: 0bdf1fe56d587cb4497c5e7275fb5b5e, type: 2}
+  Green: {fileID: 2100000, guid: 6d830dba349de4e4c8f94fcb1fc029b4, type: 2}
 --- !u!1001 &2144425696
 Prefab:
   m_ObjectHideFlags: 0
