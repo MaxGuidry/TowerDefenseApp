@@ -26,7 +26,7 @@ namespace EnemyClass
                 {EnemyTypes.BasicTank, BasicTankPrefab}
             };
 
-            StartCoroutine(Utils.RepeatAction(SpawnRandomEnemy, Random.Range(1, 2)));
+            StartCoroutine(Utils.RepeatActionForeverWithDelay(SpawnRandomEnemy, Random.Range(1, 2)));
         }
 
         private void Update()

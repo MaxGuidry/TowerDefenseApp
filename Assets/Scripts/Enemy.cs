@@ -45,7 +45,7 @@ namespace EnemyClass
 
         public void TakeDamage(float damage)
         {
-            _currentHealth = _currentHealth - damage > 0 ? Utils.UpdateHealth(_currentHealth - damage) : Utils.UpdateHealth(0);
+            _currentHealth = _currentHealth - damage > 0 ? (_currentHealth - damage) : 0;
 
             if (_currentHealth == 0)
             {

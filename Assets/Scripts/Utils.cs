@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Utils : MonoBehaviour
+public static class Utils
 {
     public static T GetRandomEnum<T>()
     {
@@ -13,12 +13,7 @@ public class Utils : MonoBehaviour
         return (T)enumType;
     }
 
-    public static float UpdateHealth(float newHealth)
-    {
-        return newHealth;
-    }
-
-    public static IEnumerator RepeatAction(Action func, int delay)
+    public static IEnumerator RepeatActionForeverWithDelay(Action func, float delay)
     {
         while (true)
         {
@@ -26,4 +21,25 @@ public class Utils : MonoBehaviour
             yield return new WaitForSeconds(delay);
         }
     }
+    public static IEnumerator RepeatActionNumberOfTimes(Action func, int numOfTimes)
+    {
+        int i = 0;
+        while (i < numOfTimes)
+        {
+            i++;
+            func();
+            yield return null;
+        }
+    }
+    public static IEnumerator RepeatActionNumberOfTimesWityDelay(Action func, int numOfTimes,float delay)
+    {
+        int i = 0;
+        while (i < numOfTimes)
+        {
+            i++;
+            func();
+            yield return new WaitForSeconds(delay);
+        }
+    }
+
 }
