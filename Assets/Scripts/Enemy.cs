@@ -1,53 +1,89 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace EnemyClass
 {
+    public enum EnemyState
+    {
+        Chasing,
+        Attacking,
+        Dead
+    }
+
     [Serializable]
     public class Enemy : MonoBehaviour
     {
+        private float _currentHealth;
+        private EnemyManager _enemyManager;
+
+        public EnemyState CurrentState;
         public EnemyTypes EnemyType;
-        public float MaxHealth, EnemyDamage, EnemySpeed;
+        public float MaxHealth, EnemyDamage, EnemySpeed, StoppingDistance;
         public Vector3 SpawnPos;
 
-        private float _currentHealth;
-        private EnemyManager enemyManager;
-
-        public void InitEnemy(float maxHealth, float enemyDamage, float enemySpeed, EnemyTypes enemyType, Vector3 spawnPos)
+        public void InitEnemy(float maxHealth, float enemyDamage, float enemySpeed, float stoppingDistance, EnemyTypes enemyType,
+            Vector3 spawnPos)
         {
+            StoppingDistance = stoppingDistance;
             MaxHealth = maxHealth;
             EnemyDamage = enemyDamage;
             EnemyType = enemyType;
             SpawnPos = spawnPos;
             EnemySpeed = enemySpeed;
             _currentHealth = MaxHealth;
-            enemyManager = FindObjectOfType<EnemyManager>();
+            _enemyManager = FindObjectOfType<EnemyManager>();
         }
 
-        public void TakeDamage(float damage)
+        private void Update()
         {
-            var hp = _currentHealth - damage;
-            _currentHealth = hp > 0 ? UpdateHealth(hp) : UpdateHealth(0);
-
-            if (_currentHealth == 0)
+            if (CurrentState == EnemyState.Dead)
             {
-                enemyManager.AllEnemies.Remove(this);
+                _enemyManager.AllEnemies.Remove(this);
                 Destroy(gameObject);
             }
         }
 
-        private float UpdateHealth(float newHealth)
+        public void TakeDamage(float damage)
         {
-            return newHealth;
+            _currentHealth = _currentHealth - damage > 0 ? Utils.UpdateHealth(_currentHealth - damage) : Utils.UpdateHealth(0);
+
+            if (_currentHealth == 0)
+            {
+                CurrentState = EnemyState.Dead;
+            }
         }
 
-        void OnTriggerEnter(Collider other)
+        public void ChaseTarget(Vector3 targetPos, float time)
         {
-            if (other.gameObject.name == "Hub")
+            if (CurrentState != EnemyState.Dead)
             {
-                TakeDamage(MaxHealth);
+                if (Vector3.Distance(targetPos, transform.position) > StoppingDistance)
+                {
+                    CurrentState = EnemyState.Chasing;
+                    transform.position = Vector3.MoveTowards(transform.position, targetPos, EnemySpeed * time);
+                }
+                else
+                {
+                    AttackTarget();
+                    //TODO: Temporary
+                    TakeDamage(MaxHealth);
+                }
+            }
+        }
+
+        public void AttackTarget()
+        {
+            CurrentState = EnemyState.Attacking;
+            switch (EnemyType)
+            {
+                case EnemyTypes.BasicMelee:
+                    break;
+                case EnemyTypes.BasicRanged:
+                    break;
+                case EnemyTypes.BasicTank:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

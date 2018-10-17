@@ -8,66 +8,57 @@ namespace EnemyClass
 {
     public class EnemyManager : MonoBehaviour
     {
-        [Header("Hub")]
-        public GameObject Center;
-        [Header("Enemy Prefabs")]
-        public GameObject BasicMeleePrefab;
+        [Header("Hub")] public GameObject Center;
+        public float SpawnDistance;
+        [Header("Enemy Prefabs")] public GameObject BasicMeleePrefab;
         public GameObject BasicRangedPrefab;
         public GameObject BasicTankPrefab;
 
         public List<Enemy> AllEnemies;
+        private Dictionary<EnemyTypes, GameObject> _enemyDictionary;
 
-        void Start()
+        private void Start()
         {
-            StartCoroutine(BeginSpawningEnemies(Random.Range(1, 2)));
+            _enemyDictionary = new Dictionary<EnemyTypes, GameObject>
+            {
+                {EnemyTypes.BasicMelee, BasicRangedPrefab},
+                {EnemyTypes.BasicRanged, BasicRangedPrefab},
+                {EnemyTypes.BasicTank, BasicTankPrefab}
+            };
+
+            StartCoroutine(Utils.RepeatAction(SpawnRandomEnemy, Random.Range(1, 2)));
         }
 
-        void Update()
+        private void Update()
         {
             foreach (var enemy in AllEnemies)
             {
-                var step = enemy.EnemySpeed * Time.deltaTime;
-                enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, Center.transform.position, step);
+                if (enemy.CurrentState != EnemyState.Dead)
+                {
+                    enemy.ChaseTarget(Center.transform.position, Time.deltaTime);
+                }
             }
         }
 
-        public GameObject SpawnEnemy(float maxHealth, float enemyDamage, float enemySpeed, EnemyTypes enemyType, GameObject enemyPrefab, Vector3 spawnPos)
+        public GameObject SpawnEnemy(float maxHealth, float enemyDamage, float enemySpeed, float stoppingDistance, EnemyTypes enemyType,
+            GameObject enemyPrefab, Vector3 spawnPos)
         {
-            GameObject enemyInstance;
-            switch (enemyType)
-            {
-                case EnemyTypes.BasicMelee:
-                    {
-                        enemyInstance = Instantiate(BasicMeleePrefab, spawnPos, Quaternion.identity);
-                        break;
-                    }
-                case EnemyTypes.BasicRanged:
-                    {
-                        enemyInstance = Instantiate(BasicRangedPrefab, spawnPos, Quaternion.identity);
-                        break;
-                    }
-                case EnemyTypes.BasicTank:
-                    {
-                        enemyInstance = Instantiate(BasicTankPrefab, spawnPos, Quaternion.identity);
-                        break;
-                    }
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(enemyType), enemyType, null);
-            }
+            var enemyInstance = Instantiate(_enemyDictionary[enemyType], spawnPos, Quaternion.identity);
             enemyInstance.transform.SetParent(transform);
+
             var enemyClass = enemyInstance.GetComponent<Enemy>();
-            enemyClass.InitEnemy(maxHealth, enemyDamage, enemySpeed, enemyType, spawnPos);
+            enemyClass.InitEnemy(maxHealth, enemyDamage, enemySpeed, stoppingDistance, enemyType, spawnPos);
+
             AllEnemies.Add(enemyClass);
             return enemyInstance;
         }
 
         public void SpawnRandomEnemy()
         {
-            var enumType = GetRandomEnum<EnemyTypes>();
-            float maxHealth;
-            float enemyDamage;
-            float enemySpeed;
-            var spawnPos = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 0)) * 30;
+            var enumType = Utils.GetRandomEnum<EnemyTypes>();
+            float maxHealth, enemyDamage, enemySpeed;
+            var spawnPos = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 0)) * SpawnDistance;
+
             switch (enumType)
             {
                 case EnemyTypes.BasicMelee:
@@ -75,7 +66,7 @@ namespace EnemyClass
                         maxHealth = Random.Range(100, 150);
                         enemyDamage = Random.Range(10, 20);
                         enemySpeed = Random.Range(5, 8);
-                        SpawnEnemy(maxHealth, enemyDamage, enemySpeed, enumType, BasicMeleePrefab, spawnPos);
+                        SpawnEnemy(maxHealth, enemyDamage, enemySpeed, 1f, enumType, BasicMeleePrefab, spawnPos);
                         break;
                     }
                 case EnemyTypes.BasicRanged:
@@ -83,36 +74,20 @@ namespace EnemyClass
                         maxHealth = Random.Range(75, 100);
                         enemyDamage = Random.Range(25, 30);
                         enemySpeed = Random.Range(5, 8);
-                        SpawnEnemy(maxHealth, enemyDamage, enemySpeed, enumType, BasicRangedPrefab, spawnPos);
+                        SpawnEnemy(maxHealth, enemyDamage, enemySpeed, 10f, enumType, BasicRangedPrefab, spawnPos);
                         break;
                     }
                 case EnemyTypes.BasicTank:
                     {
                         maxHealth = Random.Range(200, 250);
                         enemyDamage = Random.Range(5, 20);
-                        enemySpeed = Random.Range(5, 8);
-                        SpawnEnemy(maxHealth, enemyDamage, enemySpeed, enumType, BasicTankPrefab, spawnPos);
+                        enemySpeed = Random.Range(2, 3);
+                        SpawnEnemy(maxHealth, enemyDamage, enemySpeed, 1f, enumType, BasicTankPrefab, spawnPos);
                         break;
                     }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        public IEnumerator BeginSpawningEnemies(int delay)
-        {
-            while (true)
-            {
-                SpawnRandomEnemy();
-                yield return new WaitForSeconds(delay);
-            }
-        }
-
-        private static T GetRandomEnum<T>()
-        {
-            var values = Enum.GetValues(typeof(T));
-            var enumType = values.GetValue(Random.Range(0, values.Length));
-            return (T)enumType;
         }
     }
 }
