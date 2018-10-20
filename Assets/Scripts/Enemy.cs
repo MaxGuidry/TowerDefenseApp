@@ -1,4 +1,5 @@
 ﻿using System;
+using GlobalMethods;
 using UnityEngine;
 
 namespace EnemyClass
@@ -21,7 +22,17 @@ namespace EnemyClass
         public float MaxHealth, EnemyDamage, EnemySpeed, StoppingDistance;
         public Vector3 SpawnPos;
 
-        public void InitEnemy(float maxHealth, float enemyDamage, float enemySpeed, float stoppingDistance, EnemyTypes enemyType,
+        /// <summary>
+        ///     Initialize this enemy with passed in values
+        /// </summary>
+        /// <param name="maxHealth"></param>
+        /// <param name="enemyDamage"></param>
+        /// <param name="enemySpeed"></param>
+        /// <param name="stoppingDistance"></param>
+        /// <param name="enemyType"></param>
+        /// <param name="spawnPos"></param>
+        public void InitEnemy(float maxHealth, float enemyDamage, float enemySpeed, float stoppingDistance,
+            EnemyTypes enemyType,
             Vector3 spawnPos)
         {
             StoppingDistance = stoppingDistance;
@@ -32,27 +43,28 @@ namespace EnemyClass
             EnemySpeed = enemySpeed;
             _currentHealth = MaxHealth;
             _enemyManager = FindObjectOfType<EnemyManager>();
+            StartCoroutine(Utils.RepeatAction(DestroyDeadEnemy, 0.02f));
         }
 
-        private void Update()
-        {
-            if (CurrentState == EnemyState.Dead)
-            {
-                _enemyManager.AllEnemies.Remove(this);
-                Destroy(gameObject);
-            }
-        }
-
+        /// <summary>
+        ///     The current enemy is going to take the passed in damage
+        /// </summary>
+        /// <param name="damage"></param>
         public void TakeDamage(float damage)
         {
-            _currentHealth = _currentHealth - damage > 0 ? (_currentHealth - damage) : 0;
+            _currentHealth -= damage;
 
-            if (_currentHealth == 0)
+            if (_currentHealth <= 0)
             {
                 CurrentState = EnemyState.Dead;
             }
         }
 
+        /// <summary>
+        ///     Chase the target relative to the time
+        /// </summary>
+        /// <param name="targetPos"></param>
+        /// <param name="time"></param>
         public void ChaseTarget(Vector3 targetPos, float time)
         {
             if (CurrentState != EnemyState.Dead)
@@ -71,6 +83,9 @@ namespace EnemyClass
             }
         }
 
+        /// <summary>
+        ///     Set state to attacking and run animtion
+        /// </summary>
         public void AttackTarget()
         {
             CurrentState = EnemyState.Attacking;
@@ -85,6 +100,28 @@ namespace EnemyClass
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        /// <summary>
+        ///     Check if enemy is dead and destroy it
+        /// </summary>
+        /// <returns></returns>
+        private void DestroyDeadEnemy()
+        {
+            if (CurrentState == EnemyState.Dead)
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        /// <summary>
+        ///     Stop all coroutines
+        ///     Remove dead enemy from list
+        /// </summary>
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+            _enemyManager.AllEnemies.Remove(this);
         }
     }
 }
