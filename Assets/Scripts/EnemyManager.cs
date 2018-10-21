@@ -8,32 +8,36 @@ namespace EnemyClass
 {
     public class EnemyManager : MonoBehaviour
     {
+        public static EnemyManager Instance;
         private Dictionary<EnemyTypes, GameObject> _enemyDictionary;
-
         public List<Enemy> AllEnemies;
 
-        [Header("Enemy Prefabs")] public GameObject BasicMeleePrefab;
-
+        [Header("Enemy Prefabs")]
+        public GameObject BasicMeleePrefab;
         public GameObject BasicRangedPrefab;
         public GameObject BasicTankPrefab;
-        [Header("Hub")] public GameObject Center;
-        public float SpawnDistance;
 
+        [Header("Hub")]
+        public GameObject Center;
+
+        public float SpawnDistance;
+        public static Stats BasicMelee, BasicRanged, BasicTank;
         /// <summary>
         ///     Add each enemy type to a dictionary with the assigned prefab
         ///     Start each coroutine
         /// </summary>
         private void Awake()
         {
+            Instance = this;
             _enemyDictionary = new Dictionary<EnemyTypes, GameObject>
             {
-                {EnemyTypes.BasicMelee, BasicRangedPrefab},
+                {EnemyTypes.BasicMelee, BasicMeleePrefab},
                 {EnemyTypes.BasicRanged, BasicRangedPrefab},
                 {EnemyTypes.BasicTank, BasicTankPrefab}
             };
 
-            StartCoroutine(Utils.RepeatAction(SpawnRandomEnemy, Random.Range(1, 2)));
-            StartCoroutine(Utils.RepeatAction(BeginEnemyAction, 0.02f));
+            StartCoroutine(Utils.RepeatActionForeverWithDelay(SpawnRandomEnemy, Random.Range(1, 2)));
+            StartCoroutine(Utils.RepeatActionForeverWithDelay(BeginEnemyAction, 0.02f));
         }
 
         /// <summary>
@@ -69,7 +73,7 @@ namespace EnemyClass
         {
             var enumType = Utils.GetRandomEnum<EnemyTypes>();
             var spawnPos = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 0)) * SpawnDistance;
-            Utils.SetEnemyStats(enumType);
+            SetEnemyStats(enumType);
             float maxHealth, enemyDamage, enemySpeed, stoppingDistance;
             GameObject prefab;
 
@@ -78,28 +82,28 @@ namespace EnemyClass
                 case EnemyTypes.BasicMelee:
                     {
                         prefab = BasicMeleePrefab;
-                        maxHealth = Utils.BasicMelee.MaxHealth;
-                        enemyDamage = Utils.BasicMelee.EnemyDamage;
-                        enemySpeed = Utils.BasicMelee.EnemySpeed;
-                        stoppingDistance = Utils.BasicMelee.StoppingDistance;
+                        maxHealth = BasicMelee.MaxHealth;
+                        enemyDamage = BasicMelee.EnemyDamage;
+                        enemySpeed = BasicMelee.EnemySpeed;
+                        stoppingDistance = BasicMelee.StoppingDistance;
                         break;
                     }
                 case EnemyTypes.BasicRanged:
                     {
                         prefab = BasicRangedPrefab;
-                        maxHealth = Utils.BasicRanged.MaxHealth;
-                        enemyDamage = Utils.BasicRanged.EnemyDamage;
-                        enemySpeed = Utils.BasicRanged.EnemySpeed;
-                        stoppingDistance = Utils.BasicRanged.StoppingDistance;
+                        maxHealth = BasicRanged.MaxHealth;
+                        enemyDamage = BasicRanged.EnemyDamage;
+                        enemySpeed = BasicRanged.EnemySpeed;
+                        stoppingDistance = BasicRanged.StoppingDistance;
                         break;
                     }
                 case EnemyTypes.BasicTank:
                     {
                         prefab = BasicTankPrefab;
-                        maxHealth = Utils.BasicTank.MaxHealth;
-                        enemyDamage = Utils.BasicTank.EnemyDamage;
-                        enemySpeed = Utils.BasicTank.EnemySpeed;
-                        stoppingDistance = Utils.BasicRanged.StoppingDistance;
+                        maxHealth = BasicTank.MaxHealth;
+                        enemyDamage = BasicTank.EnemyDamage;
+                        enemySpeed = BasicTank.EnemySpeed;
+                        stoppingDistance = BasicRanged.StoppingDistance;
                         break;
                     }
                 default:
@@ -107,6 +111,43 @@ namespace EnemyClass
             }
 
             SpawnEnemy(maxHealth, enemyDamage, enemySpeed, stoppingDistance, enumType, prefab, spawnPos);
+        }
+
+        /// <summary>
+        ///     Set each enemy stats here
+        /// </summary>
+        /// <param name="type"></param>
+        public static void SetEnemyStats(EnemyTypes type)
+        {
+            switch (type)
+            {
+                case EnemyTypes.BasicMelee:
+                    {
+                        BasicMelee.MaxHealth = Random.Range(100, 150);
+                        BasicMelee.EnemyDamage = Random.Range(10, 20);
+                        BasicMelee.EnemySpeed = Random.Range(5, 8);
+                        BasicMelee.StoppingDistance = 1f;
+                        break;
+                    }
+                case EnemyTypes.BasicRanged:
+                    {
+                        BasicRanged.MaxHealth = Random.Range(75, 100);
+                        BasicRanged.EnemyDamage = Random.Range(25, 30);
+                        BasicRanged.EnemySpeed = Random.Range(5, 8);
+                        BasicRanged.StoppingDistance = 7f;
+                        break;
+                    }
+                case EnemyTypes.BasicTank:
+                    {
+                        BasicTank.MaxHealth = Random.Range(200, 250);
+                        BasicTank.EnemyDamage = Random.Range(5, 20);
+                        BasicTank.EnemySpeed = Random.Range(2, 3);
+                        BasicTank.StoppingDistance = 1f;
+                        break;
+                    }
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
 
         /// <summary>
@@ -131,5 +172,10 @@ namespace EnemyClass
         {
             StopAllCoroutines();
         }
+    }
+
+    public struct Stats
+    {
+        public float MaxHealth, EnemyDamage, EnemySpeed, StoppingDistance;
     }
 }

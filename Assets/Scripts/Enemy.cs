@@ -15,7 +15,6 @@ namespace EnemyClass
     public class Enemy : MonoBehaviour
     {
         private float _currentHealth;
-        private EnemyManager _enemyManager;
 
         public EnemyState CurrentState;
         public EnemyTypes EnemyType;
@@ -42,8 +41,7 @@ namespace EnemyClass
             SpawnPos = spawnPos;
             EnemySpeed = enemySpeed;
             _currentHealth = MaxHealth;
-            _enemyManager = FindObjectOfType<EnemyManager>();
-            StartCoroutine(Utils.RepeatAction(DestroyDeadEnemy, 0.02f));
+            StartCoroutine(Utils.RepeatActionForeverWithDelay(DestroyDeadEnemy, 0.02f));
         }
 
         /// <summary>
@@ -121,7 +119,7 @@ namespace EnemyClass
         private void OnDisable()
         {
             StopAllCoroutines();
-            _enemyManager.AllEnemies.Remove(this);
+            EnemyManager.Instance.AllEnemies.Remove(this);
         }
     }
 }
