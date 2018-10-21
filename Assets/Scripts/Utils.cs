@@ -8,7 +8,6 @@ namespace GlobalMethods
 {
     public class Utils : MonoBehaviour
     {
-        public static Stats BasicMelee, BasicRanged, BasicTank;
 
         /// <summary>
         ///     Returns a random enum
@@ -57,48 +56,5 @@ namespace GlobalMethods
                 yield return new WaitForSeconds(delay);
             }
         }
-
-
-        /// <summary>
-        ///     Set each enemy stats here
-        /// </summary>
-        /// <param name="type"></param>
-        public static void SetEnemyStats(EnemyTypes type)
-        {
-            switch (type)
-            {
-                case EnemyTypes.BasicMelee:
-                    {
-                        BasicMelee.MaxHealth = Random.Range(100, 150);
-                        BasicMelee.EnemyDamage = Random.Range(10, 20);
-                        BasicMelee.EnemySpeed = Random.Range(5, 8);
-                        BasicMelee.StoppingDistance = 1f;
-                        break;
-                    }
-                case EnemyTypes.BasicRanged:
-                    {
-                        BasicRanged.MaxHealth = Random.Range(75, 100);
-                        BasicRanged.EnemyDamage = Random.Range(25, 30);
-                        BasicRanged.EnemySpeed = Random.Range(5, 8);
-                        BasicRanged.StoppingDistance = 7f;
-                        break;
-                    }
-                case EnemyTypes.BasicTank:
-                    {
-                        BasicTank.MaxHealth = Random.Range(200, 250);
-                        BasicTank.EnemyDamage = Random.Range(5, 20);
-                        BasicTank.EnemySpeed = Random.Range(2, 3);
-                        BasicTank.StoppingDistance = 1f;
-                        break;
-                    }
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
-        }
-    }
-
-    public struct Stats
-    {
-        public float MaxHealth, EnemyDamage, EnemySpeed, StoppingDistance;
     }
 }
