@@ -4,71 +4,50 @@ using UnityEngine;
 
 public class PlaceTowerAroundHub : MonoBehaviour
 {
-    
-    
+    public GameObject towerPrefab;
+    // Use this for initialization
     void Start()
     {
 
-
-        BuyTower();
+        TESTOBJ = GameObject.Instantiate(towerPrefab);
+        rend = TESTOBJ.GetComponent<Renderer>();
     }
-    public GameObject towerPrefab;
+
     bool canPlace;
-
-    Vector3 screenPos;
-
+#if UNITY_EDITOR
+    Vector3 mouse => Input.mousePosition;
+    public GameObject TESTOBJ;
+#endif
     public Camera cam;
     public GameObject Hub;
-    [HideInInspector]
-    public GameObject newTower;
- 
-    Renderer rend;
-    public void BuyTower()
-    {
-        newTower = GameObject.Instantiate(towerPrefab);
-        rend = newTower.GetComponent<Renderer>();
-        StartCoroutine(PlaceTower());
-    }
-    public IEnumerator PlaceTower()
+    // Update is called once per frame
+    void Update()
     {
 
-        bool placed = false;
-        while (!placed)
-        {
+        //in editor use mouse
 #if UNITY_EDITOR
-            screenPos = Input.mousePosition;
-#endif
-            canPlace = false;
-            var worldPoint = cam.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, (Hub.transform.position - cam.transform.position).magnitude));
-            newTower.transform.position = worldPoint;
-            var cols = Physics.OverlapBox(new Vector3(worldPoint.x, 0, worldPoint.z), new Vector3(towerPrefab.transform.localScale.x / 2, 1, towerPrefab.transform.localScale.z / 2));
-
-            for (int i = 0; i < cols.Length; i++)
+        canPlace = false;
+        var worldPoint = cam.ScreenToWorldPoint(new Vector3(mouse.x, mouse.y, (Hub.transform.position - cam.transform.position).magnitude));
+        TESTOBJ.transform.position = worldPoint;
+        var cols = Physics.OverlapBox(new Vector3(worldPoint.x, 0, worldPoint.z), new Vector3(towerPrefab.transform.localScale.x/2, 1, towerPrefab.transform.localScale.z/2));
+       
+        for(int i = 0;i<cols.Length;i++)
+        {
+            if(cols[i].gameObject.tag == "Tower"||cols[i].gameObject.tag == "Hub")
             {
-                if (cols[i].gameObject == newTower)
-                    continue;
-                if (cols[i].gameObject.tag == "Tower" || cols[i].gameObject.tag == "Hub")
-                {
-                    canPlace = false;
-                    break;
-                }
-                if (cols[i].gameObject.tag == "Area")
-                    canPlace = true;
+                canPlace = false;
+                break;
             }
-            if (canPlace && Input.GetMouseButton(0))
-            {
-                placed = true;
-            }
-
-            if (canPlace)
-                rend.material.color = Color.green;
-            else
-                rend.material.color = Color.red;
-            yield return null;
+            if (cols[i].gameObject.tag == "Area")
+                canPlace = true;
         }
-        rend.material.color = Color.blue;
-
-        //TODO: REMOVE WHEN BUYING IS ACTUALLY SET UP THIS IS FOR TESTING
-        BuyTower();
+#endif
+        if (canPlace)
+            rend.material = Green;
+        else
+            rend.material = Red;
     }
+    public Material Red;
+    public Material Green;
+    Renderer rend;
 }
