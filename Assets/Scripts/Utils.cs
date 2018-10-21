@@ -28,7 +28,7 @@ namespace GlobalMethods
         /// <param name="func"></param>
         /// <param name="delay"></param>
         /// <returns></returns>
-        public static IEnumerator RepeatAction(Action func, float delay)
+        public static IEnumerator RepeatActionForeverWithDelay(Action func, float delay)
         {
             while (true)
             {
@@ -36,6 +36,28 @@ namespace GlobalMethods
                 yield return new WaitForSeconds(delay);
             }
         }
+
+        public static IEnumerator RepeatActionNumberOfTimes(Action func, int numOfTimes)
+        {
+            int i = 0;
+            while (i < numOfTimes)
+            {
+                i++;
+                func();
+                yield return null;
+            }
+        }
+        public static IEnumerator RepeatActionNumberOfTimesWithDelay(Action func, int numOfTimes, float delay)
+        {
+            int i = 0;
+            while (i < numOfTimes)
+            {
+                i++;
+                func();
+                yield return new WaitForSeconds(delay);
+            }
+        }
+
 
         /// <summary>
         ///     Set each enemy stats here
