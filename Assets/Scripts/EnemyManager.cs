@@ -103,7 +103,7 @@ namespace EnemyClass
                         maxHealth = BasicTank.MaxHealth;
                         enemyDamage = BasicTank.EnemyDamage;
                         enemySpeed = BasicTank.EnemySpeed;
-                        stoppingDistance = BasicRanged.StoppingDistance;
+                        stoppingDistance = BasicTank.StoppingDistance;
                         break;
                     }
                 default:
