@@ -23,7 +23,6 @@ namespace Tower
         public int bulletCount;
         public float spreadAngle;
         public float bulletFireVel = 1;
-        public GameObject mainTarget;
-        public Collider[] targets;
+        
     }
 }
