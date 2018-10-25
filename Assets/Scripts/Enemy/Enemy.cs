@@ -1,5 +1,5 @@
 ﻿using System;
-using GlobalMethods;
+using Global;
 using UnityEngine;
 
 namespace EnemyClass
@@ -55,6 +55,8 @@ namespace EnemyClass
             if (_currentHealth <= 0)
             {
                 CurrentState = EnemyState.Dead;
+                //TODO: TEMP...add a better way of deciding what enemies give whtat money
+                Global.GlobalGameData.playerData.money += 100;
             }
         }
 

@@ -4,7 +4,7 @@ using EnemyClass;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace GlobalMethods
+namespace Global
 {
     public class Utils : MonoBehaviour
     {

@@ -8,7 +8,7 @@ public class PlaceTowerAroundHub : MonoBehaviour
 
     void Start()
     {
-        BuyTower();
+        //BuyTower();
     }
 
     public GameObject towerPrefab;
@@ -22,25 +22,41 @@ public class PlaceTowerAroundHub : MonoBehaviour
     public GameObject newTower;
 
     Renderer rend;
-    public void BuyTower()
-    {
-        newTower = GameObject.Instantiate(towerPrefab);
-        rend = newTower.GetComponent<Renderer>();
-        StartCoroutine(PlaceTower());
-    }
-    public IEnumerator PlaceTower()
-    {
 
+    public void BuyTower(GameObject tower)
+    {
+        var currentTower = tower.GetComponent<Tower.TowerBehavior>().data;
+        if (Global.GlobalGameData.playerData.money < currentTower.buyCost)
+        {
+            //TODO: Enable popup saying you cannot buy or have this check before the button is available to press (greyed out buttons)
+            return;
+        }
+        Global.GlobalGameData.playerData.money -= currentTower.buyCost;
+        newTower = GameObject.Instantiate(tower);
+        rend = newTower.GetComponent<Renderer>();
+
+        StartCoroutine(PlaceTower(currentTower));
+    }
+    private IEnumerator PlaceTower(Tower.TowerData tower)
+    {
         bool placed = false;
         while (!placed)
         {
 #if UNITY_EDITOR
             screenPos = Input.mousePosition;
+            //TODO: make button or something with touchscreen that can cancel purchase
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                CancelTowerPurchase(tower);
+                yield break;
+            }
+
 #endif
             canPlace = false;
             var worldPoint = cam.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, (Hub.transform.position - cam.transform.position).magnitude));
+            worldPoint.y = .5f;
             newTower.transform.position = worldPoint;
-            var cols = Physics.OverlapBox(new Vector3(worldPoint.x, 0, worldPoint.z), new Vector3(towerPrefab.transform.localScale.x / 2, 1, towerPrefab.transform.localScale.z / 2));
+            var cols = Physics.OverlapBox(new Vector3(worldPoint.x, worldPoint.y, worldPoint.z), new Vector3(towerPrefab.transform.localScale.x * 1.75f, 1, towerPrefab.transform.localScale.z * 1.75f));
 
             for (int i = 0; i < cols.Length; i++)
             {
@@ -68,7 +84,27 @@ public class PlaceTowerAroundHub : MonoBehaviour
         }
         rend.material.color = Color.blue;
 
-        //TODO: REMOVE WHEN BUYING IS ACTUALLY SET UP THIS IS FOR TESTING
-        BuyTower();
+
     }
+
+    public void CancelTowerPurchase(Tower.TowerData tower)
+    {
+        Destroy(newTower);
+        Global.GlobalGameData.playerData.money += tower.buyCost;
+    }
+
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (newTower != null)
+            Gizmos.DrawWireCube(new Vector3(newTower.transform.position.x, 0, newTower.transform.position.z), new Vector3(towerPrefab.transform.localScale.x * 1.75f, 1, towerPrefab.transform.localScale.z * 1.75f) * 2);
+        
+    }
+
+
+
+
+
+#endif
 }
