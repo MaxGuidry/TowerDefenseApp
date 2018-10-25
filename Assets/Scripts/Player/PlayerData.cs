@@ -7,9 +7,10 @@ namespace Player
     [CreateAssetMenu(fileName = "ScriptableObject", menuName = "PlayerData")]
     public class PlayerData : ScriptableObject
     {
-       public float Speed;
-       public float Health;
-       public float Defense;
+        public float Speed;
+        public float Health;
+        public float Defense;
+        public int money = 0;
 
     }
 }
