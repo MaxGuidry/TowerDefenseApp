@@ -5,20 +5,21 @@ using System;
 using System.Linq;
 namespace TouchInput
 {
+    #region TouchScreen Class
+    public class ScreenTouch
+    {
+        public GameObject objectTouchStartedOn;
+        public GameObject objectTouchingNow;
+        public Component behaviourUsingThisTouch;
+        public Action onTouchStarted;
+        public Action onTouchMoved;
+        public Action onTouchEnded;
+        public float timeHeld;
+    }
+    #endregion
     public static class TouchScreenInput
     {
-        #region TouchScreen Class
-        public class ScreenTouch
-        {
-            public GameObject objectTouchStartedOn;
-            public GameObject objectTouchingNow;
-            public Component behaviourUsingThisTouch;
-            public Action onTouchStarted;
-            public Action onTouchMoved;
-            public Action onTouchEnded;
-            public float timeHeld;
-        }
-        #endregion
+        
 
         #region Public Variables 
         public static Action onAnyTouchStarted;
