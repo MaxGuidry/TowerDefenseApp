@@ -8,6 +8,7 @@ namespace Global
 {
     public class Utils : MonoBehaviour
     {
+        public static bool SoundOn, MusicOn;
 
         /// <summary>
         ///     Returns a random enum
