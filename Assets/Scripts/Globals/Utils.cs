@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using EnemyClass;
+using System.IO;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
+using System.Reflection;
+using System.Linq;
 namespace Global
 {
 
@@ -13,7 +15,11 @@ namespace Global
 
         private Slider LoadingBar;
         private Text LoadingText;
-        private List<string> loadMessages = new List<string>() { "Want to work with us? Send us an email inquiring about jobs: InertiaGamesJobs@gmail.com", "Send feedback to InertiaGamesFeedback@gmail.com", "Don't forget to feed your pet today! :)", "Tell your mom you love her today!" };
+        private List<string> loadMessages = new List<string>()
+        { "Want to work with us? Send us an email inquiring about jobs: InertiaGamesJobs@gmail.com",
+            "Send feedback to InertiaGamesFeedback@gmail.com",
+            "Don't forget to feed your pet today! :)",
+            "Tell your mom you love her today!" };
 
 
         public static bool SoundOn, MusicOn;
@@ -162,6 +168,134 @@ namespace Global
             yield return new WaitForSeconds(1);
             load.allowSceneActivation = true;
             yield break;
+        }
+
+
+        /// <summary>
+        /// Save file to persistant data path with name fileName
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static bool SaveFile<T>(T obj, string fileName)
+        {
+            var fullPath = Application.persistentDataPath + "/" + fileName + ".txt";
+            FileStream fStream;
+            if (!File.Exists(fullPath))
+            {
+                fStream = File.Create(fullPath);
+            }
+            else
+                fStream = new FileStream(fullPath, FileMode.OpenOrCreate);
+            if (!fStream.CanWrite)
+                return false;
+            if ((obj as ScriptableObject) != null)
+            {
+                fStream.Close();
+                SaveToFileScriptable<T>(fullPath, obj);
+                return true;
+            }
+            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            byte[] byteObj;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, obj);
+                byteObj = ms.ToArray();
+            }
+            fStream.Write(byteObj, 0, byteObj.Length);
+
+            fStream.Close();
+            return true;
+        }
+
+
+        /// <summary>
+        /// Save file to persistant data path inside of a folder 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="folderPath"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static bool SaveFile<T>(T obj, string folderPath, string fileName)
+        {
+            var fullPath = Application.persistentDataPath + "/" + fileName;
+            FileStream fStream;
+            if (!File.Exists(fullPath))
+            {
+                fStream = File.Create(fullPath);
+            }
+            else
+                fStream = new FileStream(fullPath, FileMode.OpenOrCreate);
+            if (!fStream.CanWrite)
+                return false;
+            if ((obj as ScriptableObject) != null)
+            {
+                fStream.Close();
+                SaveToFileScriptable<T>(fullPath, obj);
+                return true;
+            }
+            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            byte[] byteObj;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, obj);
+                byteObj = ms.ToArray();
+            }
+            fStream.Write(byteObj, 0, byteObj.Length);
+
+            fStream.Close();
+            return true;
+        }
+
+
+        public static T LoadFileToObject<T>(string fileName)
+        {
+
+            string fullPath = Application.persistentDataPath + "/" + fileName + ".txt";
+
+            if (!File.Exists(fullPath))
+                return default(T);
+            FileStream fStream = new FileStream(fullPath, FileMode.Open);
+            if (!fStream.CanRead)
+                return default(T);
+            if (typeof(T).BaseType == typeof(ScriptableObject))
+            {
+                fStream.Close();
+                return LoadFileScriptable<T>(fullPath);
+            }
+
+
+
+            byte[] obj = new byte[fStream.Length];
+            fStream.Read(obj, 0, (int)fStream.Length);
+            fStream.Close();
+            
+
+            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            using (MemoryStream ms = new MemoryStream(obj))
+            {
+
+                return (T)bf.Deserialize(ms);
+            }
+
+        }
+
+        
+        private static T LoadFileScriptable<T>(string fullPath)// where T: ScriptableObject
+        {
+            var content = File.ReadAllText(fullPath);
+            T obj = Activator.CreateInstance<T>();
+            JsonUtility.FromJsonOverwrite(content,obj);
+            return obj;
+        }
+
+
+        private static void SaveToFileScriptable<T>(string fullPath, T obj)
+        {
+            var json = JsonUtility.ToJson(obj);
+            File.WriteAllText(fullPath, json);
         }
     }
 }

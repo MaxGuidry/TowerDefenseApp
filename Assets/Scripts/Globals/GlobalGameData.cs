@@ -22,12 +22,14 @@ namespace Global
         private void Awake()
         {
             //TODO: Create this file on first play
-            firstGame = !File.Exists(Application.persistentDataPath + "GameData/PlayerData.txt");
+            firstGame = !File.Exists(Application.persistentDataPath + "/PlayerData");
 
 
             
             playerData = PlayerData;
+            Utils.SaveFile<Player.PlayerData>(PlayerData, "PlayerData");
 
+            var obj = Utils.LoadFileToObject<Player.PlayerData>("PlayerData");
             if (firstGame)
             {
                 SetupForFirstGame();

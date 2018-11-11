@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Player
 {
     [CreateAssetMenu(fileName = "ScriptableObject", menuName = "PlayerData")]
+    [System.Serializable]
     public class PlayerData : ScriptableObject
     {
         public float Speed;
