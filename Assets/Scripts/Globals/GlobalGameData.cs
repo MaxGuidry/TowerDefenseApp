@@ -10,7 +10,7 @@ namespace Global
     {
         #region Global Static Members
         public static Player.PlayerData playerData;
-        public bool firstGame;
+        public static bool firstGame;
         #endregion
 
 
