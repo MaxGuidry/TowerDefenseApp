@@ -1,6 +1,7 @@
 ﻿using System;
 using Global;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EnemyClass
 {
@@ -56,7 +57,8 @@ namespace EnemyClass
             {
                 CurrentState = EnemyState.Dead;
                 //TODO: TEMP...add a better way of deciding what enemies give whtat money
-                Global.GlobalGameData.playerData.money += 100;
+                Player.PlayerData.Money += 100;
+                
             }
         }
 
@@ -106,10 +108,14 @@ namespace EnemyClass
         ///     Check if enemy is dead and destroy it
         /// </summary>
         /// <returns></returns>
-        private void DestroyDeadEnemy()
+        public void DestroyDeadEnemy()
         {
+            var towers = FindObjectsOfType<Tower.TowerBehavior>() as Tower.TowerBehavior[];
+            
             if (CurrentState == EnemyState.Dead)
             {
+                foreach (var t in towers)
+                    t.targets.Remove(gameObject);
                 Destroy(gameObject);
             }
         }

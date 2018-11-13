@@ -26,12 +26,12 @@ public class PlaceTowerAroundHub : MonoBehaviour
     public void BuyTower(GameObject tower)
     {
         var currentTower = tower.GetComponent<Tower.TowerBehavior>().data;
-        if (Global.GlobalGameData.playerData.money < currentTower.buyCost)
+        if (Player.PlayerData.Money < currentTower.buyCost)
         {
             //TODO: Enable popup saying you cannot buy or have this check before the button is available to press (greyed out buttons)
             return;
         }
-        Global.GlobalGameData.playerData.money -= currentTower.buyCost;
+        Player.PlayerData.Money -= currentTower.buyCost;
         newTower = GameObject.Instantiate(tower);
         rend = newTower.GetComponent<Renderer>();
 
@@ -90,7 +90,7 @@ public class PlaceTowerAroundHub : MonoBehaviour
     public void CancelTowerPurchase(Tower.TowerData tower)
     {
         Destroy(newTower);
-        Global.GlobalGameData.playerData.money += tower.buyCost;
+        Player.PlayerData.Money += tower.buyCost;
     }
 
 

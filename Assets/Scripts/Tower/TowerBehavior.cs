@@ -7,52 +7,55 @@ namespace Tower
     //TODO: towers target enemies based on stats.
     public class TowerBehavior : MonoBehaviour
     {
+        public GameObject bulletHolder;
         public GameObject mainTarget;
-        public Collider[] targets;
+        [HideInInspector]
+        public List<GameObject> targets;
         public TowerData data;
         public GameObject bullet;
-        void Awake()
+        
+        public List<Tower.TowerData> levels;
+      
+        public void Awake()
         {
-
+            data = levels[0];
         }
+
         private void Start()
         {
+            targets = new List<GameObject>();
+            GetComponent<CapsuleCollider>().radius = data.range;
 
             if (data.type == TowerData.TowerType.SPREAD)
-                StartCoroutine(FireSpread(.5f));
+                StartCoroutine(FireSpread(data.fireRate));
             else
-                StartCoroutine(Fire(.5f, mainTarget));
-
+                StartCoroutine(Fire(data.fireRate));
         }
+
         // Update is called once per frame
         void Update()
         {
-            targets = Physics.OverlapSphere(transform.position, data.range, ~(1 << LayerMask.NameToLayer("Bullet") | 1 << LayerMask.NameToLayer("Tower")));
-
-
-            for (int i = 0; i < targets.Length; i++)
+            if (targets == null || targets.Count == 0 || targets[0] == null)
+                return;
+            else
             {
-                if (targets[i].gameObject.layer == LayerMask.NameToLayer("Enemy"))
-                {
-                    mainTarget = targets[i].gameObject;
-                    break;
-                }
-                else
-                    mainTarget = null;
+                mainTarget = targets[0];
+                transform.LookAt(mainTarget.transform);
             }
         }
 
-        IEnumerator Fire(float rate, GameObject target)
+        IEnumerator Fire(float rate)
         {
             while (true)
             {
-                yield return new WaitForSeconds(rate);
                 while (mainTarget == null)
                     yield return null;
-                transform.LookAt(mainTarget.transform);
-                GameObject b = Instantiate(bullet, transform.position, transform.rotation, transform);
+                GameObject b = Instantiate(bullet, transform.position, transform.rotation, bulletHolder.transform);
                 b.transform.rotation = Quaternion.RotateTowards(b.transform.rotation, Random.rotation, data.spreadAngle);
                 b.GetComponent<Rigidbody>().AddForce(b.transform.forward * data.bulletFireVel);
+                b.GetComponent<Bullet>().damage = data.damage;
+                Destroy(b, 5);
+                yield return new WaitForSeconds(rate);
             }
         }
 
@@ -60,27 +63,49 @@ namespace Tower
         {
             while (true)
             {
-                yield return new WaitForSeconds(rate);
                 while (mainTarget == null)
-                {
                     yield return null;
-                }
                 for (int i = 0; i < data.bulletCount; i++)
                 {
-                    GameObject b = Instantiate(bullet, transform.position, transform.rotation, transform);
+                    GameObject b = Instantiate(bullet, transform.position, transform.rotation, bulletHolder.transform);
                     b.transform.rotation = Quaternion.RotateTowards(b.transform.rotation, Random.rotation, data.spreadAngle);
                     b.GetComponent<Rigidbody>().AddForce(b.transform.forward * data.bulletFireVel);
+                    b.GetComponent<Bullet>().damage = data.damage;
+                    Destroy(b, 5);
                 }
+                yield return new WaitForSeconds(rate);
             }
         }
-        public void Upgrade()
-        {
 
-        }
-        private void OnDrawGizmos()
+        public TowerData UpgradeTower()
         {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, data.range);
+            int currentLevelIndex = levels.IndexOf(data);
+            int maxLevelIndex = levels.Count - 1;
+            if (currentLevelIndex < maxLevelIndex)
+            {
+                return levels[currentLevelIndex + 1];
+            }
+            else
+                return data;
+        }
+
+        public void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.layer != LayerMask.NameToLayer("Enemy"))
+                return;
+            else
+                targets.Add(other.gameObject);
+        }
+
+        public void OnTriggerExit(Collider other)
+        {
+            targets.Remove(other.gameObject);
+        }
+
+        public void OnTriggerStay(Collider other)
+        {
+            if (other.gameObject == null)
+                targets.Remove(other.gameObject);
         }
     }
 }
