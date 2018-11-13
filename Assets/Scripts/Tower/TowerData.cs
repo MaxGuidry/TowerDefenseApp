@@ -24,6 +24,7 @@ namespace Tower
         public int bulletCount;
         public float spreadAngle;
         public float bulletFireVel = 1;
-        
+        public string TowerName;
+        public Sprite TowerSprite;
     }
 }

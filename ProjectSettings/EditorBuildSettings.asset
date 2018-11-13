@@ -5,13 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/TowerTest101.unity
     guid: aed82ae8157a15948a730886cb172ef7
   - enabled: 1
     path: Assets/Scenes/InGameUI.unity
     guid: 1bc28119984d8a9478787c6f4ee091ba
+  - enabled: 1
+    path: Assets/Scenes/CurrencySystemSetup.unity
+    guid: b9ff35df03d503746ab68c1d77424ba1
+  - enabled: 1
+    path: Assets/Scenes/LoadingScreen.unity
+    guid: e61ee7095ec8d224982b8d7b25ee58d8
   m_configObjects: {}
