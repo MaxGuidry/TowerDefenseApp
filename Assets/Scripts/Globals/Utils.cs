@@ -5,8 +5,6 @@ using System.IO;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
-using System.Reflection;
-using System.Linq;
 namespace Global
 {
 
@@ -16,10 +14,18 @@ namespace Global
         private Slider LoadingBar;
         private Text LoadingText;
         private List<string> loadMessages = new List<string>()
-        { "Want to work with us? Send us an email inquiring about jobs: InertiaGamesJobs@gmail.com",
+        {
+            "Want to work with us? Send us an email inquiring about jobs: InertiaGamesJobs@gmail.com",
             "Send feedback to InertiaGamesFeedback@gmail.com",
             "Don't forget to feed your pet today! :)",
-            "Tell your mom you love her today!" };
+            "Tell your mom you love her today!",
+            "Converting sugar into calories.",
+            "Did you know that one of the developers once got to touch a live tiger?",
+            "Approximately 66.66666% of the programmers that worked on this game have worked at Olive Garden.",
+            "Approximately 100% of the programmers that worked on this game graduated from AIE in 2018.",
+            "Show us your high scores on instagram using the hashtag: #MedievalDefenseScore",
+            "Interested in looking at our terrible code? Check out the github repo for this project www.github.com/MaxGuidry/TowerDefenseApp"
+        };
 
 
         public static bool SoundOn, MusicOn;
@@ -37,13 +43,14 @@ namespace Global
                 return;
             }
             Instance = this;
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneChange;
 
             DontDestroyOnLoad(this);
 
         }
-        private void OnLevelWasLoaded(int level)
+        private void OnSceneChange(UnityEngine.SceneManagement.Scene s,UnityEngine.SceneManagement.LoadSceneMode mode)
         {
-            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "LoadingScreen")
+            if (s.name == "LoadingScreen")
             {
 
                 LoadingBar = FindObjectOfType<Slider>();
@@ -178,9 +185,9 @@ namespace Global
         /// <param name="obj"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static bool SaveFile<T>(T obj, string fileName)
+        public static bool SaveFile(object obj, string fileName)
         {
-            var fullPath = Application.persistentDataPath + "/" + fileName + ".txt";
+            var fullPath = Application.persistentDataPath + "/" + fileName;
             FileStream fStream;
             if (!File.Exists(fullPath))
             {
@@ -193,7 +200,7 @@ namespace Global
             if ((obj as ScriptableObject) != null)
             {
                 fStream.Close();
-                SaveToFileScriptable<T>(fullPath, obj);
+                SaveToFileScriptable(fullPath, obj);
                 return true;
             }
             System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
@@ -218,7 +225,7 @@ namespace Global
         /// <param name="folderPath"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static bool SaveFile<T>(T obj, string folderPath, string fileName)
+        public static bool SaveFile(object obj, string folderPath, string fileName)
         {
             var fullPath = Application.persistentDataPath + "/" + fileName;
             FileStream fStream;
@@ -233,7 +240,7 @@ namespace Global
             if ((obj as ScriptableObject) != null)
             {
                 fStream.Close();
-                SaveToFileScriptable<T>(fullPath, obj);
+                SaveToFileScriptable(fullPath, obj);
                 return true;
             }
             System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
@@ -283,7 +290,7 @@ namespace Global
         }
 
         
-        private static T LoadFileScriptable<T>(string fullPath)// where T: ScriptableObject
+        private static T LoadFileScriptable<T>(string fullPath)
         {
             var content = File.ReadAllText(fullPath);
             T obj = Activator.CreateInstance<T>();
@@ -292,7 +299,7 @@ namespace Global
         }
 
 
-        private static void SaveToFileScriptable<T>(string fullPath, T obj)
+        private static void SaveToFileScriptable(string fullPath, object obj)
         {
             var json = JsonUtility.ToJson(obj);
             File.WriteAllText(fullPath, json);
