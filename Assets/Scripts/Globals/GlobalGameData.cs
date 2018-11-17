@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 
 namespace Global
@@ -10,7 +11,10 @@ namespace Global
     public class GlobalGameData : MonoBehaviour
     {
         #region Global Static Members
-        public static Player.PlayerData playerData;
+        public static Player.PlayerData playerData = new Player.PlayerData();
+        public static UnityEvent expEvent = new UnityEvent();
+        public static UnityEvent upgradeEvent = new UnityEvent();
+        public static UnityEvent prestigeEvent = new UnityEvent();
         public bool firstGame;
         #endregion
         public Text money;

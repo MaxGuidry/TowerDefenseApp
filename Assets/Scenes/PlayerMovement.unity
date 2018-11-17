@@ -185,7 +185,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &562030655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +226,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114449927235498238, guid: f207952f78ea66b4ea975c481ad92d67,
+        type: 2}
+      propertyPath: levels.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4859467337140006, guid: f207952f78ea66b4ea975c481ad92d67, type: 2}
       propertyPath: m_LocalPosition.x
       value: 3.82
@@ -940,7 +945,7 @@ GameObject:
   - component: {fileID: 1778509131}
   - component: {fileID: 1778509129}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -983,25 +988,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6ebc9578fc5cef4e89c77722d665986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levels:
-  - Speed: 0
-    Health: 100
-    Defense: 0.8
-    currentExp: 0
-    expToNextLevel: 100
-    Alive: 1
-  - Speed: 6
-    Health: 120
-    Defense: 0.7
-    currentExp: 0
-    expToNextLevel: 200
-    Alive: 1
-  - Speed: 9
-    Health: 140
-    Defense: 0.6
-    currentExp: 0
-    expToNextLevel: 300
-    Alive: 1
+  upgradeLevel: 1
+  upgradePrestige: 1
+  upgradeSpeed: 1
+  upgradeHealth: 10
+  upgradeDefense: 0.02
+  currentExp: 0
+  expToNextLevel: 100
 --- !u!1 &1889643568
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,6 +1094,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data:
+    level: 1
+    prestige: 1
     Speed: 1
     Health: 100
     Defense: 0.9
