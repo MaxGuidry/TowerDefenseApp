@@ -4,20 +4,21 @@ using UnityEngine;
 
 namespace Tower
 {
-    [CreateAssetMenu(fileName = "ScriptableObject", menuName = "TowerData")]
-    public class TowerData : ScriptableObject
+    [System.Serializable]
+    public class TowerData
     {
+        
         public enum TowerType
         {
             LONG,
             SHORT,
             SPREAD
         };
+        [HideInInspector]
         public TowerType type;
         public int damage;
         public float range;
         public float fireRate;
-        public int level;
         public int buyCost;
         public int upgradeCost;
         public int bulletCount;

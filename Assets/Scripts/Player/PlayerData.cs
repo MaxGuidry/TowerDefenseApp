@@ -4,13 +4,18 @@ using UnityEngine;
 
 namespace Player
 {
-    [CreateAssetMenu(fileName = "ScriptableObject", menuName = "PlayerData")]
-    public class PlayerData : ScriptableObject
+    [System.Serializable]
+    public class PlayerData
     {
-        public float Speed;
-        public float Health;
-        public float Defense;
-        public int money = 0;
-
+        public int level = 1;
+        public int prestige = 1;
+        public float Speed = 1;
+        public float Health = 100;
+        public float Defense = .90f;
+        //[HideInInspector]
+        public static int Money;
+        public float currentExp = 0;
+        public float expToNextLevel = 100;
+        public bool Alive = true;
     }
 }

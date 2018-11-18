@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 65861803609645548}
   - component: {fileID: 114845235404451158}
   - component: {fileID: 54794487617561930}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BasicMeleePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,8 +124,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d863ef22c0396f74ab0ffb58d202d8d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentState: 0
   EnemyType: 0
   MaxHealth: 0
   EnemyDamage: 0
   EnemySpeed: 0
+  StoppingDistance: 0
   SpawnPos: {x: 0, y: 0, z: 0}
