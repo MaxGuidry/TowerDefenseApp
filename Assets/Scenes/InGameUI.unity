@@ -281,6 +281,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114535745890906254, guid: 8cfc5e2072a761f4daa9eba0d5fb3c18,
+        type: 2}
+      propertyPath: m_Constraint
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8cfc5e2072a761f4daa9eba0d5fb3c18, type: 2}
   m_IsPrefabAsset: 0
@@ -544,6 +549,11 @@ Prefab:
       propertyPath: m_SizeDelta.y
       value: 33.3
       objectReference: {fileID: 0}
+    - target: {fileID: 114035074149993124, guid: e8403ca42cd6ff1459fdfc4ff2fe4e13,
+        type: 2}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8403ca42cd6ff1459fdfc4ff2fe4e13, type: 2}
   m_IsPrefabAsset: 0
@@ -640,6 +650,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1587bb3c013a7ac408911f6333feed08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Towers: []
   ItemPrefab: {fileID: 1664780913888588, guid: bc906ac65a8a81a49974a6e1b7f996f4, type: 2}
 --- !u!1 &1802489322
 GameObject:

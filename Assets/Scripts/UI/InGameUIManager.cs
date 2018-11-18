@@ -9,6 +9,7 @@ namespace UserInterface
 {
     public class InGameUIManager : MonoBehaviour
     {
+        public static InGameUIManager Instance;
         public Transform StatHolderTransform, TimeTransform;
         public GameObject PausePanel, ShopPanel;
         public PlayerData PlayerData;
@@ -20,6 +21,7 @@ namespace UserInterface
 
         private void Awake()
         {
+            Instance = this;
             PausePanel.SetActive(false);
             ShopPanel.SetActive(false);
 

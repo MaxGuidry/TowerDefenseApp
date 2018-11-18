@@ -21,4 +21,5 @@ MonoBehaviour:
   bulletCount: 1
   spreadAngle: 0
   bulletFireVel: 10
-  targets: []
+  TowerName: Short
+  TowerSprite: {fileID: 21300000, guid: 450e0fb9d04cc4ad6b5ee0226f3e1ea2, type: 3}

@@ -21,4 +21,5 @@ MonoBehaviour:
   bulletCount: 5
   spreadAngle: 20
   bulletFireVel: 14
-  targets: []
+  TowerName: Spread
+  TowerSprite: {fileID: 21300000, guid: 41e1dab459c764518bb7df14a984baed, type: 3}
