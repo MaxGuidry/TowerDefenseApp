@@ -36,13 +36,22 @@ namespace Global
                 SetupForFirstGame();
             }
 
-        }
+           
 
+        }
+        void Start()
+        {
+#if UNITY_EDITOR
+            Advertisements.PlayAdvert.Init();
+            Advertisements.PlayAdvert.ShowAdvert(Advertisements.AdType.video);
+
+#endif
+        }
         // Update is called once per frame
         void Update()
         {
 #if UNITY_EDITOR
-            money.text = Player.PlayerData.Money.ToString();
+            //money.text = Player.PlayerData.Money.ToString();
             if (Input.GetKeyDown(KeyCode.KeypadPlus))
             {
                 Player.PlayerData.Money += 1000;

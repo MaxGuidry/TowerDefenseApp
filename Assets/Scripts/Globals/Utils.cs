@@ -11,6 +11,7 @@ namespace Global
     public class Utils : MonoBehaviour
     {
 
+
         private Slider LoadingBar;
         private Text LoadingText;
         private List<string> loadMessages = new List<string>()
@@ -108,6 +109,11 @@ namespace Global
                 func();
                 yield return new WaitForSeconds(delay);
             }
+        }
+
+        public static Coroutine StartCoroutineOnUtils(IEnumerator routine)
+        {
+            return Instance.StartCoroutine(routine);
         }
 
         public static void LoadScene(string sceneName)
