@@ -115,7 +115,10 @@ namespace Global
         {
             return Instance.StartCoroutine(routine);
         }
-
+        public static void StopAllCoroutinesOnUtils()
+        {
+            Instance.StopAllCoroutines();
+        }
         public static void LoadScene(string sceneName)
         {
             Instance.StartCoroutine(Instance.LoadSceneAsync(sceneName));
@@ -146,7 +149,7 @@ namespace Global
 
             float textTimer = 0;
 
-            //7 is arbitrary and can be changed but you should also change the 8 below if you do change this.
+            //number is arbitrary and can be changed
             while (timer < 6f)
             {
                 if (timer < 5f)

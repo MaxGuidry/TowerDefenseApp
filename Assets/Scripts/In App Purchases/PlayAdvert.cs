@@ -20,10 +20,15 @@ namespace Advertisements
 
     public class PlayAdvert
     {
+        //when we add in option to pay to stop seeing ads they will still need to watch ads that give them a bonus.
+        public static bool ShowThisUserRegularAds;
+        private static bool initialized = false;
         public static void Init()
         {
+            if (initialized)
+                return;
             Monetization.Initialize("2928078", true);
-
+            initialized = true;
         }
         public static void ShowAdvert(AdType type)
         {
@@ -32,6 +37,7 @@ namespace Advertisements
 
         private static IEnumerator ShowAd(AdType type)
         {
+            
             while (!Monetization.isInitialized)
             {
                 yield return new WaitForSeconds(.2f);
@@ -44,7 +50,8 @@ namespace Advertisements
             var ad = Monetization.GetPlacementContent(type.ToString());
             if (ad == null)
             {
-                throw new System.Exception("Ad was null");
+                Debug.LogError("Ad retrieved was null.");
+                yield break;
             }
             while (!ad.ready) yield return new WaitForSeconds(.2f);
             yield return (ad as ShowAdPlacementContent).Show();
